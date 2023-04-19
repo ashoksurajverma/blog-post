@@ -1,4 +1,5 @@
 const express = require("express");
+const signIn = require("../middleware/is-signin");
 const {
   signup,
   login,
@@ -8,11 +9,10 @@ const {
 
 const router = express.Router();
 
-router.put("/signup", signup);
+router.put("/signup",  signup);
 router.post("/login", login);
-router.get("/status", getStatus)
-router.patch("/status", updateStatus)
-
+router.get("/status", signIn, getStatus)
+router.patch("/status", signIn, updateStatus)
 
 module.exports = router;
 

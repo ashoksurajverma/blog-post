@@ -69,19 +69,49 @@ exports.login = (req, res, next) => {
     }
     next(err);
   })
-  // res.status(200).json({
-  //   message: 'Signin successfully !!!'
-  // })
 }
 
 exports.getStatus = (req, res) => {
-  res.status(200).json({
-    status: 'You are new'
+  const userId = req.userId;
+  User.findById(userId).then(user => {
+    if (!user) {
+      const error = new Error("User not found")
+      error.statusCode = 404;
+      throw error
+    }
+    res.status(200).json({
+      status: user.status,
+    })
+  }).catch(error => {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   })
-}
+} 
 
-exports.updateStatus = (req, res) => {
-  res.status(200).json({
-    message: 'You have updated a status'
+exports.updateStatus = (req, res, next) => {
+  const status = req.body.status;
+  User.findById(req.userId)
+  .then(user => {
+    if (!user) {
+      const error = new Error("User not valid");
+      error.statusCode = 404;
+      throw error;
+    }
+    user.status = status;
+    return user.save()
+  })
+  .then(result => {
+    res.status(200).json({
+      message: 'user status updated !!!!',
+      result: result.status,
+    })
+  })
+  .catch(err => {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   })
 }
