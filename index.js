@@ -50,6 +50,15 @@ app.use((req, res, next) => {
 app.use("/auth", authRoutes);
 app.use("/feed", feedRoutes);
 
+app.use((error, req, res, next) => {
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data || [];
+  res.status(status).json({
+    message: message,
+    data: data
+  })
+})
 mongoose.connect("mongodb://localhost:27017/mybdagain", { useNewUrlParser: true}).then(() => {
   console.log("Connected to mongoDB");
   app.listen(PORT, () => {

@@ -1,4 +1,5 @@
 const express = require("express");
+const signIn = require("../middleware/is-signin");
 const {
   getAllPost,
   createPost,
@@ -6,13 +7,14 @@ const {
   getPostWithId,
   updatePost,
 } = require("../controller/feed.controller")
+
 const router = express.Router();
 
 // GET:  all posts
-router.get("/posts", getAllPost);
+router.get("/posts", signIn, getAllPost);
 
 // create a post
-router.post("/post", createPost);
+router.post("/post", signIn, createPost);
 
 // Get specific post
 router.get("/post/:postId", getPostWithId);
